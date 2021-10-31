@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.3.0">
+  <zoom_level>13</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1898</x>
+      <y>195</y>
+      <w>949</w>
+      <h>546</h>
+    </coordinates>
+    <panel_attributes>CShieldNode : public rclcpp::Node
+--
+
++ CShieldNode()
++ ~CShieldNode()
+
+--
+
+- rpmSub_                  : rclcpp::Subscription&lt;iotbot_interface::msg::RotationSpeed&gt;::SharedPtr
+- rpmPub_                  : rclcpp::Publisher&lt;iotbot_interface::msg::RotationSpeed&gt;::SharedPtr
+- batteryPub_             : rclcpp::Publisher&lt;iotbot_interface::msg::Battery&gt;::SharedPtr
+- currentTime_           : rclcpp::Time
+- lastTime_                 : rclcpp::Time
+- deltaTime_               : rclcpp::Duration
+- serialPort_               : CShield
+- serialSendData_      : SSerialRequestData
+- serialReceiveData_ : SSerialResponseData
+
+
+- run() : void
+- rpmCallback( rpmMsg : const iotbot_interface::msg::RotationSpeed::SharedPtr) : void
+- checkIfRpmMsgIsNew(): void
+- publishRpm() : void
+- publishVoltage() : void
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1898</x>
+      <y>845</y>
+      <w>949</w>
+      <h>637</h>
+    </coordinates>
+    <panel_attributes>CShield
+--
+
++ CShield()
++ CShield()
++ openPort() : bool
++ openPort() : bool
++ closePort() : void
++ isPortOpened() : bool
++ send() : bool
++ receive() : bool
+
+--
+
+- SSerialParams params_
+- uart_ : std::unique_ptr&lt;mraa::Uart&gt; 
+- isPortOpened_ : bool
+
+
+- readParamFile() : bool
+- initParamStruct() : void
+- setBaudrate() : bool
+- setMode() : bool
+- setFlowControl() : bool
+- fillTxBuffer() : bool
+- fillDataFromRxBuffer() : bool
+- setTxBufferWith() : template void
+- getValueFromRxBuffer() : template void
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>1781</x>
+      <y>78</y>
+      <w>1196</w>
+      <h>1508</h>
+    </coordinates>
+    <panel_attributes>iotbot_shield</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>65</x>
+      <y>78</y>
+      <w>1547</w>
+      <h>1170</h>
+    </coordinates>
+    <panel_attributes>iotbot_motion_control</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>442</x>
+      <y>169</y>
+      <w>806</w>
+      <h>637</h>
+    </coordinates>
+    <panel_attributes>CMotionControl : public rclcpp::Node
+--
+
++ CMotionControl()
++ ~CMotionControl()
+
+--
+
+# velSub_                    : rclcpp::Subscription&lt;geometry_msgs::msg::Twist&gt;::SharedPtr
+# chassisParams_       : ChassisParams
+# conversionParams_ : RobotConversionParams
+# rpm_ =                      : std::array&lt;float, 4&gt;
+
+
+# normalizeValues() : void
+# publishRpm() : void
+# velocityCallback() : virtual void
+# calculateKinematic() : virtual void
+
+--
+
+- rpmPub_                   : rclcpp::Publisher&lt;iotbot_interface::msg::RotationSpeed&gt;::SharedPtr
+- motorParams_          : MotorParams
+
+
+- setChassisParams() : void
+- setMotorParams() : void
+- calculateRobotProperties() : void
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>442</x>
+      <y>793</y>
+      <w>260</w>
+      <h>156</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>180.0;10.0;10.0;100.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1001</x>
+      <y>793</y>
+      <w>234</w>
+      <h>156</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;160.0;100.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>910</x>
+      <y>923</y>
+      <w>585</w>
+      <h>247</h>
+    </coordinates>
+    <panel_attributes>CMotionOmnidirectionalNode : public CMotionControl
+--
+
++ CMotionOmnidirectionalNode()
++ ~CMotionOmnidirectionalNode()
+
+--
+
+- velocityCallback() : void
+- calculateKinematic() : void
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>182</x>
+      <y>923</y>
+      <w>598</w>
+      <h>247</h>
+    </coordinates>
+    <panel_attributes>CMotionDifferentialNode : public CMotionControl
+--
+
++ CMotionDifferentialNode()
++ ~CMotionDifferentialNode()
+
+--
+
+- velocityCallback() : void
+- calculateKinematic() : void
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>
